@@ -5,7 +5,7 @@
   <title>Career Tree Quiz</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 30px; background: #f2f2f2; }
-    .container { background: #fff; padding: 20px; border-radius: 10px; max-width: 800px; margin: auto; }
+    .container { background: #fff; padding: 20px; border-radius: 10px; max-width: 900px; margin: auto; }
     h1, h2, h3 { text-align: center; }
     .section { margin-bottom: 40px; }
     .question { margin-bottom: 20px; }
@@ -27,12 +27,22 @@
         <div id="specializationOptions"></div>
       </div>
       <div class="section" id="section3">
-        <h2>Section 3: Country Preference</h2>
-        <label><input type="radio" name="country" value="India"> India</label>
-        <label><input type="radio" name="country" value="Abroad"> Abroad</label>
+        <h2>Section 3: College Preference</h2>
+        <label><input type="radio" name="collegePref" value="Top IITs/IISc Level"> Top IITs/IISc Level Institutes</label>
+        <label><input type="radio" name="collegePref" value="Private Universities"> Private Universities</label>
+        <label><input type="radio" name="collegePref" value="Specialized Research Institutes"> Specialized Research Institutes (NCBS, IISERs, NIPER)</label>
+        <label><input type="radio" name="collegePref" value="Top Foreign Universities"> Top Foreign Universities (MIT, Stanford, ETH Zurich)</label>
       </div>
       <div class="section" id="section4">
-        <h2>Section 4: Personal Information</h2>
+        <h2>Section 4: Country Preference</h2>
+        <label><input type="checkbox" name="countryPref" value="Higher research funding and lab exposure"> Higher research funding and lab exposure</label>
+        <label><input type="checkbox" name="countryPref" value="Higher initial salary and job market"> Higher initial salary and job market</label>
+        <label><input type="checkbox" name="countryPref" value="International exposure and diverse culture"> International exposure and diverse culture</label>
+        <label><input type="checkbox" name="countryPref" value="Comfort of staying closer to home"> Comfort of staying closer to home</label>
+        <label><input type="checkbox" name="countryPref" value="Emerging market growth potential"> Emerging market growth potential</label>
+      </div>
+      <div class="section" id="section5">
+        <h2>Section 5: Personal Information</h2>
         <label>Full Name: <input type="text" name="fullName" required></label>
       </div>
       <button type="button" onclick="submitQuiz()">Submit Quiz</button>
@@ -42,44 +52,36 @@
       <p id="careerPath"></p>
       <h3>Your Specialization:</h3>
       <p id="specialization"></p>
-      <h3>Preferred Country:</h3>
+      <h3>Preferred College Type:</h3>
+      <p id="college"></p>
+      <h3>Country Preference:</h3>
       <p id="country"></p>
       <button onclick="downloadPDF()">Download Career Report</button>
     </div>
   </div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <script>
     const questions = [
-      { q: "Do you enjoy reading research papers?", cat: "higher" },
-      { q: "Do you prefer solving real-world problems?", cat: "industry" },
-      { q: "Do you dream of starting your own company?", cat: "startup" },
-      { q: "Are you patient enough for long-term projects?", cat: "higher" },
-      { q: "Do you like teamwork and structured environments?", cat: "industry" },
-      { q: "Are you okay with taking risks for big rewards?", cat: "startup" },
-      { q: "Do you prefer a stable and clear career path?", cat: "industry" },
-      { q: "Do you love freedom to explore different ideas?", cat: "startup" },
-      { q: "Are you motivated by curiosity and discovery?", cat: "higher" },
-      { q: "Do you enjoy coding and data analysis?", cat: "industry" }
+      { q: "Are you excited about research and discovery?", cat: "higher" },
+      { q: "Do you want to solve real-world industrial problems?", cat: "industry" },
+      { q: "Do you want to build your own company or product?", cat: "startup" },
+      { q: "Would you prefer publishing research papers over launching products?", cat: "higher" },
+      { q: "Are you ready for the long PhD journey?", cat: "higher" },
+      { q: "Are you interested in dealing with market risks and uncertainties?", cat: "startup" },
+      { q: "Do you prefer a defined corporate structure?", cat: "industry" },
+      { q: "Do you enjoy mentoring and teaching students?", cat: "higher" },
+      { q: "Are you more excited by innovation than by stability?", cat: "startup" },
+      { q: "Would you like to solve customer problems through biotech products?", cat: "industry" }
     ];
 
     const biotechSpecializations = [
-      "Molecular Biology", "Cell and Tissue Engineering", "Immunology", "Genetics and Genomics",
-      "Bioprocess Engineering", "Pharmaceutical Biotechnology", "Agricultural Biotechnology",
-      "Environmental Biotechnology", "Marine Biotechnology", "Bioinformatics and Computational Biology",
-      "Systems Biology", "Nanobiotechnology", "Synthetic Biology", "Neuroscience", "Structural Biology",
-      "Cancer Biology", "Regenerative Medicine", "Stem Cell Biology", "Industrial Biotechnology", "Biomaterials"
+      "Molecular Biology", "Cell Biology", "Genetics and Genomics", "Immunology", "Biochemistry", "Microbiology", "Biophysics", "Neuroscience", "Biomedical Engineering", "Bioinformatics", "Systems Biology", "Structural Biology", "Environmental Biotechnology", "Agricultural Biotechnology", "Marine Biotechnology", "Bioprocess Engineering", "Industrial Biotechnology", "Synthetic Biology", "Nanobiotechnology", "Cancer Biology", "Stem Cell Biology", "Regenerative Medicine", "Biomaterials", "Pharmaceutical Biotechnology", "Clinical Research"
     ];
 
     const industryRoles = [
-      "R&D Scientist", "Clinical Research Associate", "Regulatory Affairs Specialist",
-      "Quality Control/Assurance Officer", "Business Development Manager", "Bioprocess Engineer",
-      "Bioinformatics Scientist", "Product Manager (Biotech Products)", "Medical Science Liaison",
-      "Technical Sales Specialist", "Biotech Data Analyst", "Intellectual Property (IP) Analyst",
-      "Clinical Data Manager", "Laboratory Technician", "Biostatistician",
-      "Pharmacovigilance Officer", "Manufacturing & Production Scientist", "Computational Biologist"
+      "R&D Scientist", "Clinical Research Associate", "Regulatory Affairs Specialist", "Quality Control/Assurance Officer", "Manufacturing Scientist", "Business Development Manager", "Technical Sales Specialist", "Bioinformatics Scientist", "Computational Biologist", "Bioprocess Engineer", "Biostatistician", "Medical Science Liaison", "Product Manager (Biotech Products)", "Pharmacovigilance Officer", "Laboratory Technician", "Intellectual Property (IP) Analyst", "Clinical Data Manager", "Healthcare Consultant", "Data Analyst (Life Sciences)"
     ];
 
     const startupSectors = [
-      "Healthcare Devices", "Digital Health", "Diagnostics", "Biomanufacturing", "Personalized Medicine",
-      "Biotech Agriculture", "Clean Biotech", "Industrial Biotech"
+      "Healthcare Devices", "Digital Health", "Diagnostics", "Biomanufacturing", "Personalized Medicine", "AgriBiotech", "Clean Biotech (Sustainable Products)", "BioEnergy", "Environmental Biotech", "Industrial Biotech"
     ];
 
     const scores = { higher: 0, industry: 0, startup: 0 };
@@ -136,18 +138,19 @@
       }
 
       let specialization = formData.get('specialization') || 'General';
-      let country = formData.get('country') || 'Not specified';
+      let college = formData.get('collegePref') || 'Not specified';
+      let countryPrefs = formData.getAll('countryPref').join(', ') || 'Not specified';
       let fullName = formData.get('fullName') || 'Anonymous';
 
       document.getElementById('careerPath').innerText = `${careerPath}`;
       document.getElementById('specialization').innerText = specialization;
-      document.getElementById('country').innerText = country;
+      document.getElementById('college').innerText = college;
+      document.getElementById('country').innerText = countryPrefs;
 
       document.getElementById('quizForm').classList.add('hidden');
       document.getElementById('result').classList.remove('hidden');
 
-      // Save to global variable for PDF generation
-      window.careerReport = { fullName, careerPath, specialization, country };
+      window.careerReport = { fullName, careerPath, specialization, college, countryPrefs };
     }
 
     function downloadPDF() {
@@ -161,18 +164,18 @@
       doc.text(`Name: ${window.careerReport.fullName}`, 20, 40);
       doc.text(`Career Path: ${window.careerReport.careerPath}`, 20, 60);
       doc.text(`Specialization: ${window.careerReport.specialization}`, 20, 80);
-      doc.text(`Preferred Country: ${window.careerReport.country}`, 20, 100);
+      doc.text(`Preferred College Type: ${window.careerReport.college}`, 20, 100);
+      doc.text(`Country Preference: ${window.careerReport.countryPrefs}`, 20, 120);
 
       doc.setFontSize(12);
-      doc.text("Summary:", 20, 120);
-      doc.text("You are best suited for "+window.careerReport.careerPath+" in specialization of "+window.careerReport.specialization+". Consider pursuing opportunities in "+window.careerReport.country+".", 20, 130, { maxWidth: 170 });
+      doc.text("Summary:", 20, 140);
+      doc.text(`You are best suited for ${window.careerReport.careerPath} in the field of ${window.careerReport.specialization}. Consider applying to ${window.careerReport.college} and explore career opportunities in regions offering ${window.careerReport.countryPrefs}.`, 20, 150, { maxWidth: 170 });
 
       doc.save('Career_Tree_Report.pdf');
     }
 
     renderQuestions();
     setTimeout(() => {
-      // Assume higher for initial specialization rendering
       renderSpecializationOptions('higher');
     }, 100);
   </script></body>
