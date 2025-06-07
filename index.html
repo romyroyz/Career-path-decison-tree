@@ -21,41 +21,24 @@
       <div class="section" id="section1">
         <h2>Section 1: Career Inclination</h2>
         <div id="questions"></div>
+        <button type="button" onclick="submitInclination()">Next</button>
       </div>
-      <div class="section" id="section2">
-        <h2>Section 2: Specialization</h2>
-        <div id="specializationOptions"></div>
-      </div>
-      <div class="section" id="section3">
-        <h2>Section 3: College Preference</h2>
-        <label><input type="radio" name="collegePref" value="Top IITs/IISc Level"> Top IITs/IISc Level Institutes</label>
-        <label><input type="radio" name="collegePref" value="Private Universities"> Private Universities</label>
-        <label><input type="radio" name="collegePref" value="Specialized Research Institutes"> Specialized Research Institutes (NCBS, IISERs, NIPER)</label>
-        <label><input type="radio" name="collegePref" value="Top Foreign Universities"> Top Foreign Universities (MIT, Stanford, ETH Zurich)</label>
-      </div>
-      <div class="section" id="section4">
-        <h2>Section 4: Country Preference</h2>
+      <div class="section hidden" id="dynamicSection"></div>
+      <div class="section hidden" id="sectionCountry">
+        <h2>Country Preference</h2>
         <label><input type="checkbox" name="countryPref" value="Higher research funding and lab exposure"> Higher research funding and lab exposure</label>
         <label><input type="checkbox" name="countryPref" value="Higher initial salary and job market"> Higher initial salary and job market</label>
         <label><input type="checkbox" name="countryPref" value="International exposure and diverse culture"> International exposure and diverse culture</label>
         <label><input type="checkbox" name="countryPref" value="Comfort of staying closer to home"> Comfort of staying closer to home</label>
         <label><input type="checkbox" name="countryPref" value="Emerging market growth potential"> Emerging market growth potential</label>
       </div>
-      <div class="section" id="section5">
-        <h2>Section 5: Personal Information</h2>
+      <div class="section hidden" id="sectionInfo">
+        <h2>Personal Information</h2>
         <label>Full Name: <input type="text" name="fullName" required></label>
+        <button type="button" onclick="submitQuiz()">Submit Quiz</button>
       </div>
-      <button type="button" onclick="submitQuiz()">Submit Quiz</button>
     </form>
     <div id="result" class="hidden">
-      <h2>Your Career Path:</h2>
-      <p id="careerPath"></p>
-      <h3>Your Specialization:</h3>
-      <p id="specialization"></p>
-      <h3>Preferred College Type:</h3>
-      <p id="college"></p>
-      <h3>Country Preference:</h3>
-      <p id="country"></p>
       <button onclick="downloadPDF()">Download Career Report</button>
     </div>
   </div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <script>
@@ -99,27 +82,7 @@
       });
     }
 
-    function renderSpecializationOptions(category) {
-      const container = document.getElementById('specializationOptions');
-      let options = [];
-      if (category === 'higher') {
-        options = biotechSpecializations;
-      } else if (category === 'industry') {
-        options = industryRoles;
-      } else {
-        options = startupSectors;
-      }
-
-      options.forEach((spec, index) => {
-        container.innerHTML += `
-          <div class="question">
-            <label><input type="radio" name="specialization" value="${spec}"> ${spec}</label>
-          </div>
-        `;
-      });
-    }
-
-    function submitQuiz() {
+    function submitInclination() {
       const form = document.getElementById('quizForm');
       const formData = new FormData(form);
       questions.forEach((item, index) => {
@@ -127,6 +90,43 @@
           scores[item.cat]++;
         }
       });
+
+      let maxCategory = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+      const dynamicSection = document.getElementById('dynamicSection');
+      dynamicSection.innerHTML = '';
+
+      if (maxCategory === 'higher') {
+        dynamicSection.innerHTML += '<h2>Higher Studies - Specialization</h2>';
+        biotechSpecializations.forEach(spec => {
+          dynamicSection.innerHTML += `<label><input type='radio' name='specialization' value='${spec}'> ${spec}</label>`;
+        });
+        dynamicSection.innerHTML += '<h3>Preferred College Type</h3>';
+        dynamicSection.innerHTML += `
+          <label><input type='radio' name='collegePref' value='Top IITs/IISc Level'> Top IITs/IISc Level Institutes</label>
+          <label><input type='radio' name='collegePref' value='Private Universities'> Private Universities</label>
+          <label><input type='radio' name='collegePref' value='Specialized Research Institutes'> Specialized Research Institutes (NCBS, IISERs, NIPER)</label>
+          <label><input type='radio' name='collegePref' value='Top Foreign Universities'> Top Foreign Universities (MIT, Stanford, ETH Zurich)</label>
+        `;
+      } else if (maxCategory === 'industry') {
+        dynamicSection.innerHTML += '<h2>Industry Job Roles</h2>';
+        industryRoles.forEach(role => {
+          dynamicSection.innerHTML += `<label><input type='radio' name='specialization' value='${role}'> ${role}</label>`;
+        });
+      } else {
+        dynamicSection.innerHTML += '<h2>Startup Sectors</h2>';
+        startupSectors.forEach(sec => {
+          dynamicSection.innerHTML += `<label><input type='radio' name='specialization' value='${sec}'> ${sec}</label>`;
+        });
+      }
+
+      dynamicSection.classList.remove('hidden');
+      document.getElementById('sectionCountry').classList.remove('hidden');
+      document.getElementById('sectionInfo').classList.remove('hidden');
+    }
+
+    function submitQuiz() {
+      const form = document.getElementById('quizForm');
+      const formData = new FormData(form);
 
       let careerPath = '';
       if (scores.higher >= scores.industry && scores.higher >= scores.startup) {
@@ -138,47 +138,47 @@
       }
 
       let specialization = formData.get('specialization') || 'General';
-      let college = formData.get('collegePref') || 'Not specified';
+      let college = formData.get('collegePref') || 'N/A';
       let countryPrefs = formData.getAll('countryPref').join(', ') || 'Not specified';
       let fullName = formData.get('fullName') || 'Anonymous';
 
-      document.getElementById('careerPath').innerText = `${careerPath}`;
-      document.getElementById('specialization').innerText = specialization;
-      document.getElementById('college').innerText = college;
-      document.getElementById('country').innerText = countryPrefs;
+      window.careerReport = { fullName, careerPath, specialization, college, countryPrefs };
 
       document.getElementById('quizForm').classList.add('hidden');
       document.getElementById('result').classList.remove('hidden');
-
-      window.careerReport = { fullName, careerPath, specialization, college, countryPrefs };
     }
 
     function downloadPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
+      doc.setFillColor(173, 216, 230);
+      doc.rect(0, 0, 210, 20, 'F');
+
       doc.setFontSize(18);
-      doc.text("BioNext - Career Tree Report", 20, 20);
+      doc.setTextColor(0, 0, 102);
+      doc.text("BioNext - Career Tree Report", 20, 15);
       doc.setFontSize(12);
-      doc.text("Session Expert: Dr. Romy Roy", 20, 28);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Session Expert: Dr. Romy Roy", 20, 25);
 
       doc.setFontSize(14);
       doc.text(`Name: ${window.careerReport.fullName}`, 20, 40);
       doc.text(`Career Path: ${window.careerReport.careerPath}`, 20, 50);
       doc.text(`Specialization: ${window.careerReport.specialization}`, 20, 60);
-      doc.text(`Preferred College Type: ${window.careerReport.college}`, 20, 70);
+      if (window.careerReport.careerPath === 'Higher Studies') {
+        doc.text(`Preferred College Type: ${window.careerReport.college}`, 20, 70);
+      }
       doc.text(`Country Preference: ${window.careerReport.countryPrefs}`, 20, 80);
 
       doc.setFontSize(12);
       doc.text("Summary:", 20, 95);
-      doc.text(`You are best suited for ${window.careerReport.careerPath} in the field of ${window.careerReport.specialization}. Consider applying to ${window.careerReport.college} and explore career opportunities in regions offering ${window.careerReport.countryPrefs}.`, 20, 105, { maxWidth: 170 });
+      doc.setFont("Helvetica", "italic");
+      doc.text(`You are best suited for ${window.careerReport.careerPath} in the field of ${window.careerReport.specialization}. Consider focusing your career journey towards ${window.careerReport.countryPrefs}.`, 20, 105, { maxWidth: 170 });
 
       doc.save('Career_Tree_Report.pdf');
     }
 
     renderQuestions();
-    setTimeout(() => {
-      renderSpecializationOptions('higher');
-    }, 100);
   </script></body>
 </html>
