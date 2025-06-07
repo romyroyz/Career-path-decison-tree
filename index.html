@@ -160,7 +160,7 @@
       doc.text("BioNext - Career Tree Report", 20, 15);
       doc.setFontSize(12);
       doc.setTextColor(0, 0, 0);
-      doc.text("Session Expert: Dr. Romy Roy", 20, 25);
+      doc.text("Session Expert: Romy Roy", 20, 25);
 
       doc.setFontSize(14);
       doc.text(`Name: ${window.careerReport.fullName}`, 20, 40);
@@ -172,9 +172,44 @@
       doc.text(`Country Preference: ${window.careerReport.countryPrefs}`, 20, 80);
 
       doc.setFontSize(12);
-      doc.text("Summary:", 20, 95);
       doc.setFont("Helvetica", "italic");
+      doc.text("Summary:", 20, 95);
       doc.text(`You are best suited for ${window.careerReport.careerPath} in the field of ${window.careerReport.specialization}. Consider focusing your career journey towards ${window.careerReport.countryPrefs}.`, 20, 105, { maxWidth: 170 });
+
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 102);
+      doc.text("Plan of Action:", 20, 125);
+      doc.setTextColor(0, 0, 0);
+
+      if (window.careerReport.careerPath === 'Startup') {
+        doc.setFontSize(12);
+        doc.text("1. Refine your startup idea in the sector: " + window.careerReport.specialization, 20, 135);
+        doc.text("2. Build an MVP and validate the market.", 20, 145);
+        doc.text("3. Apply for these grants:", 20, 155);
+        doc.text("- BIRAC BIG", 30, 165);
+        doc.text("- NIDHI-EIR", 30, 175);
+        doc.text("- C-CAMP Seed Fund", 30, 185);
+        doc.text("- AIM NITI Aayog", 30, 195);
+        doc.text("- Startup India Seed Fund Scheme", 30, 205);
+      } else if (window.careerReport.careerPath === 'Higher Studies') {
+        doc.setFontSize(12);
+        doc.text("1. Strengthen your academic profile.", 20, 135);
+        doc.text("2. Prepare for entrance exams:", 20, 145);
+        doc.text("- GATE, CSIR-UGC NET, DBT-JRF, ICMR-JRF (for India)", 30, 155);
+        doc.text("- GRE, TOEFL/IELTS (for Abroad)", 30, 165);
+        doc.text("3. Apply for scholarships:", 20, 175);
+        doc.text("- Fulbright-Nehru", 30, 185);
+        doc.text("- DAAD", 30, 195);
+        doc.text("- Erasmus Mundus", 30, 205);
+      } else if (window.careerReport.careerPath === 'Industry Job') {
+        doc.setFontSize(12);
+        doc.text("1. Build a strong LinkedIn profile.", 20, 135);
+        doc.text("2. Focus on skills based on your specialization.", 20, 145);
+        doc.text("3. Apply on LinkedIn, Indeed, Naukri.", 20, 155);
+        doc.text("4. Recommended Skills:", 20, 165);
+        doc.text("- Laboratory Skills, Data Analysis, Regulatory Compliance.", 30, 175);
+      }
 
       doc.save('Career_Tree_Report.pdf');
     }
